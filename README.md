@@ -1,11 +1,7 @@
 # AssetOracle-Hedera
-Real-world asset tokenization platform using Hedera for trustless verification and fractional ownership. Built for Hedera Hello Future Apex Hackathon 2026.
-
-# AssetOracle - Hedera Edition
-
-> Trustless Real-World Asset Tokenization on Hedera
-
-Built for **Hedera Hello Future Apex Hackathon 2026** - DeFi & Tokenization Track
+Real-world asset tokenization platform using Hedera for trustless verification and fractional ownership.
+Trustless Real-World Asset Tokenization on Hedera
+Built for**Hedera Hello Future Apex Hackathon 2026** - DeFi & Tokenization Track
 
 ## Problem Statement
 
