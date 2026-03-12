@@ -1,0 +1,118 @@
+  <div className="flex justfy-center items-center flex-col">
+      <div className="w-full">
+        <div className="text-[#4f46e5] border-1 border-[#4f46e5] px-5 py-2 rounded-full text-center">
+          Trusted RWA Infrastructure Layer
+        </div>
+        <div className="pt-8 flex flex-col items-center justify-center">
+          <h1 className="text-[#0f172a] font-bold !text-xl md:!text-4xl lg:!text-7xl">
+            Verify. Tokenize.
+          </h1>
+          <h1 className="text-[#4f46e5] font-bold !text-xl md:!text-4xl lg:!text-7xl">
+            Own the Real World.
+          </h1>
+          <p className="mx-auto !text-2xl text-[#475569] flex justify-center text-center pt-8 text-lg">
+            The institutional-grade platform for bringing real-world assets
+            on-chain. Transform physical assets into verified, tokenized
+            investments with complete transparency.
+          </p>
+          <div className="flex justify-center items-center gap-5 pt-8">
+            <button className="bg-[#4f46e5] text-white !px-10 !py-6 rounded-lg font-bold hover:bg-[#3c32b0] transition-colors">
+              Register Assets
+            </button>
+
+            <button className=" !border-1 !border-[#475569] !bg-white !text-[#475569] !px-10 !py-6 rounded-lg font-bold hover:bg-[#3c32b0] transition-colors">
+              Explore Assets
+            </button>
+          </div>
+
+          <div className="flex flex-col justify-center items-center pt-25">
+            <h1 className="text-[#0f172a] font-bold !text-4xl">
+              Supported Asset Categories
+            </h1>
+            <p className="text-[#475569] !text-2sm pt-2">
+              Tokenize and trade a diverse range of real-world assets
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-5 pt-10 ">
+              {supportedAssets.map((asset, index) => (
+                <div
+                  key={index}
+                  className="border-2 border-[#e2e8f0] rounded-lg p-5 flex flex-col items-center"
+                >
+                  <div className="bg-[#4f46e5] p-3 rounded-full">
+                    {asset.svg}
+                  </div>
+                  <div className="flex flex-col items-center text-center mt-4">
+                    <h2 className="text-[#0f172a] font-bold text-xl">
+                      {asset.name}
+                    </h2>
+                    <p className="text-[#475569] text-sm pt-2">
+                      {asset.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col justify-center items-center pt-25">
+            <h1 className="text-[#0f172a] font-bold !text-4xl">
+              Supported Asset Categories
+            </h1>
+            <p className="text-[#475569] !text-2sm pt-2">
+              Tokenize and trade a diverse range of real-world assets
+            </p>
+            <div className="flex gap-5 pt-10 ">
+              {howItWorks.map((asset, index) => (
+                <div
+                  key={index}
+                  className="rounded-lg p-5 flex flex-col items-center"
+                  style={{ width: "250px" }} // optional: fixed width for symmetry
+                >
+                  <div className="bg-[#4f46e5] p-3 rounded-full">
+                    {asset.svg}
+                  </div>
+                  <div className="flex flex-col items-center text-center mt-4">
+                    <h2 className="text-[#0f172a] font-bold text-xl">
+                      {asset.name}
+                    </h2>
+                    <p className="text-[#475569] text-sm pt-2">
+                      {asset.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col w-[90%] justify-center items-center pt-25 bg-[#172033] rounded-[5vh]">
+          <div className="flex flex-col justify-center items-center">
+            <h1 className="text-white font-bold !text-4xl text-center">
+              Built on Trust & Security
+            </h1>
+            <p className="text-[#808a99] !text-2sm pt-2 text-center pt-8 mx-auto max-w-2xl">
+              Every asset on AssetOracle undergoes rigorous verification by
+              certified validators. Our multi-layer authentication process
+              ensures asset authenticity, ownership validation, and accurate
+              valuation—backed by smart contracts and on-chain transparency.
+            </p>
+
+            <div className="flex justify-center items-center pt-8">
+              {conclusion.map((asset, index) => (
+                <div
+                  key={index}
+                  className="p-10 w-[80%] flex flex-col items-center text-center"
+                  style={{ width: "200px" }}
+                >
+                  <h2 className="text-[#818cf8] font-bold text-center !text-4xl">
+                    {asset.name}
+                  </h2>
+                  <p className="text-[#818cf8] !text-sm pt-2 text-center">
+                    {asset.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

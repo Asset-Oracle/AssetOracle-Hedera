@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+body {
+  background-color: white;
+}
+
+.tw-back-button {
+  background-color: red !important;
+}
