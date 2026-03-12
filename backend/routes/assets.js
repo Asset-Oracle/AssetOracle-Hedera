@@ -3,6 +3,34 @@ const router = express.Router();
 const { supabase } = require('../config/supabase');
 const axios = require('axios');
 
+// Test endpoint to check Supabase connection
+router.get('/test-db', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('assets')
+      .select('count')
+      .limit(1);
+    
+    if (error) {
+      return res.json({
+        success: false,
+        error: error.message,
+        details: error
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Supabase connected!',
+      data: data
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      error: err.message
+    });
+  }
+});
 // GET /api/assets - Get all verified assets (marketplace)
 router.get('/', async (req, res) => {
   try {
