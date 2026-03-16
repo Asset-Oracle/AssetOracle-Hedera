@@ -31,6 +31,7 @@ router.get('/test-db', async (req, res) => {
     });
   }
 });
+
 // GET /api/assets - Get all verified assets (marketplace)
 router.get('/', async (req, res) => {
   try {
@@ -55,6 +56,66 @@ router.get('/', async (req, res) => {
   } catch (error) {
     console.error('Error fetching assets:', error);
     res.status(500).json({ error: 'Failed to fetch assets' });
+  }
+});
+
+// GET /api/assets/user/:walletAddress - Get assets owned by specific user
+router.get('/user/:walletAddress', async (req, res) => {
+  try {
+    const { walletAddress } = req.params;
+
+    if (!walletAddress) {
+      return res.status(400).json({ error: 'Wallet address required' });
+    }
+
+    console.log(`📋 Fetching assets for wallet: ${walletAddress}`);
+
+    // Get all assets owned by this wallet (case-insensitive)
+    const { data: assets, error } = await supabase
+      .from('assets')
+      .select('*')
+      .ilike('owner_wallet', walletAddress)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    console.log(`✅ Found ${assets.length} assets for ${walletAddress}`);
+
+    res.json({
+      success: true,
+      data: assets,
+      count: assets.length
+    });
+
+  } catch (error) {
+    console.error('Error fetching user assets:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch user assets',
+      details: error.message 
+    });
+  }
+});
+
+// GET /api/assets/debug/all - Debug endpoint to see all assets
+router.get('/debug/all', async (req, res) => {
+  try {
+    const { data: assets, error } = await supabase
+      .from('assets')
+      .select('id, name, owner_wallet, verification_status, created_at')
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (error) throw error;
+
+    res.json({
+      success: true,
+      data: assets,
+      count: assets.length,
+      message: 'Showing last 20 assets'
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
