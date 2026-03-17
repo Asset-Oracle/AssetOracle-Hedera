@@ -184,7 +184,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/assets/register - Register new asset with auto-verification
+// POST /api/assets/register - Register new asset with auto-verification and image upload
 router.post('/register', async (req, res) => {
   try {
     const {
@@ -195,7 +195,7 @@ router.post('/register', async (req, res) => {
       category = 'REAL_ESTATE',
       location,
       propertyDetails,
-      images = []
+      images = []  // Can accept URLs or base64 images
     } = req.body;
 
     if (!name || !estimatedValue || !ownerWallet) {
@@ -205,6 +205,74 @@ router.post('/register', async (req, res) => {
     }
 
     console.log(`📝 Registering asset: ${name}`);
+
+    // Process images - upload base64 to Supabase Storage if needed
+    const processedImages = [];
+    
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      
+      // If image is a URL, keep it as is
+      if (typeof image === 'string' && (image.startsWith('http://') || image.startsWith('https://'))) {
+        processedImages.push({ url: image, caption: `Image ${i + 1}` });
+        continue;
+      }
+      
+      // If image has a URL property, use it
+      if (image.url && (image.url.startsWith('http://') || image.url.startsWith('https://'))) {
+        processedImages.push(image);
+        continue;
+      }
+      
+      // If image is base64, upload it to Supabase Storage
+      if (image.data || (typeof image === 'string' && image.includes('base64'))) {
+        try {
+          const crypto = require('crypto');
+          
+          // Get base64 data
+          const base64Data = image.data || image;
+          const cleanBase64 = base64Data.replace(/^data:.*;base64,/, '');
+          const fileBuffer = Buffer.from(cleanBase64, 'base64');
+          
+          // Generate unique filename
+          const timestamp = Date.now();
+          const randomStr = crypto.randomBytes(8).toString('hex');
+          const fileExtension = image.type?.split('/')[1] || 'jpg';
+          const uniqueFileName = `${timestamp}-${randomStr}.${fileExtension}`;
+          
+          console.log(`📤 Uploading image to Supabase: ${uniqueFileName}`);
+          
+          // Upload to Supabase Storage
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('asset-files')
+            .upload(uniqueFileName, fileBuffer, {
+              contentType: image.type || 'image/jpeg',
+              cacheControl: '3600',
+              upsert: false
+            });
+          
+          if (uploadError) {
+            console.warn('Image upload failed, skipping:', uploadError.message);
+            continue;
+          }
+          
+          // Get public URL
+          const { data: { publicUrl } } = supabase.storage
+            .from('asset-files')
+            .getPublicUrl(uniqueFileName);
+          
+          processedImages.push({ 
+            url: publicUrl, 
+            caption: image.caption || `Image ${i + 1}` 
+          });
+          
+          console.log(`✅ Image uploaded: ${publicUrl}`);
+          
+        } catch (uploadError) {
+          console.warn('Failed to process image, skipping:', uploadError.message);
+        }
+      }
+    }
 
     // Prepare AI analysis request
     let aiAnalysisResult = {
@@ -303,7 +371,7 @@ router.post('/register', async (req, res) => {
           category,
           location: location || {},
           property_details: propertyDetails || {},
-          images: images || [],
+          images: processedImages,  // Use processed images
           verification_status,
           blockchain_data: blockchainData,
           ai_analysis: aiAnalysisResult,
@@ -316,7 +384,7 @@ router.post('/register', async (req, res) => {
 
     if (error) throw error;
 
-    console.log(`✅ Asset registered and verified: ${newAsset.id}`);
+    console.log(`✅ Asset registered with ${processedImages.length} images: ${newAsset.id}`);
 
     res.status(201).json({
       success: true,
@@ -328,7 +396,8 @@ router.post('/register', async (req, res) => {
           verificationId: blockchainData.verification_id,
           network: 'hedera-testnet',
           aiAnalysis: aiAnalysisResult
-        }
+        },
+        imagesUploaded: processedImages.length
       }
     });
 
@@ -337,6 +406,7 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ error: 'Failed to register asset', details: error.message });
   }
 });
+
 
 // POST /api/assets/:id/claim - Claim an unclaimed asset
 router.post('/:id/claim', async (req, res) => {
