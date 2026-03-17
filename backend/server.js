@@ -20,7 +20,7 @@ const uploadRoutes = require('./routes/upload');
 // Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/assets', assetRoutes);
-app.use('/api/user', userRoutes);
+app.use('/api/user', userRoutes);  
 app.use('/api/property', propertyRoutes);
 app.use('/api/chainlink', chainlinkRoutes);
 app.use('/api/upload', uploadRoutes);
