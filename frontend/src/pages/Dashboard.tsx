@@ -9,7 +9,7 @@ interface DashboardProps {
   sideBarOut: boolean;
 }
 function Dashboard({ sideBarOut }: DashboardProps) {
-  const [name, setName] = useState("Space Panda");
+  const [name, setName] = useState("");
   const { dashboardInfo, allAssets } = useGetUserInfo();
   useEffect(() => {
     const handleClick = () => {
